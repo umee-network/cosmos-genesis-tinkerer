@@ -115,6 +115,15 @@ class Validator:
     def consensus_address(self, addr):
         self._cons_addr = addr
 
+    def to_delegator(self):
+        """
+        Returns a new Delegator based on the self delegation attributtes
+        """
+        delegator = Delegator()
+        delegator.address = self.self_delegation_address
+        delegator.public_key = self.self_delegation_public_key
+        return delegator
+
 
 class Delegator:
     """
