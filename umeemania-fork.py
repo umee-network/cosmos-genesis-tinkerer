@@ -5,14 +5,17 @@ import sys
 """
 Genesis modification script on a exported genesis file from umeemania-1 umee testnet.
 Usage:
-$ ./umeemania-fork.py genesis_file_path.json
+$ ./umeemania-fork.py genesis_file_path.json tinkered_genesis_path.json
 """
 
 from cosmos_genesis_tinker import Validator, GenesisTinker
 
 GENESIS_ARCHIVE = "festival.genesis.json"
+OUTPUT_GENESIS = "tinkered_genesis.json"
 if len(sys.argv) > 1:
   GENESIS_ARCHIVE = sys.argv[1]
+if len(sys.argv) > 2:
+  OUTPUT_GENESIS = sys.argv[2]
 
 DENOM = "uumee"
 # It is currently less than this...
@@ -28,7 +31,7 @@ coping.address = 'C913552357B2B69C728EB645B528C94A30DB7AB4'
 coping.public_key = '+LCKUZH2o+2V5G4Nvl7apMoIFml6eW5zXNO69+DvaIA='
 coping.consensus_address = 'umeevalcons1pprgkthxc2yhr5gvuk2tcjjchfhq6n96jlperq'
 
-tinkerer = GenesisTinker(input_file=GENESIS_ARCHIVE)
+tinkerer = GenesisTinker(input_file=GENESIS_ARCHIVE, output_file=OUTPUT_GENESIS)
 
 tinkerer.add_task(tinkerer.increase_delegator_stake_to_validator,
                   delegator=coping.to_delegator(),
