@@ -35,7 +35,7 @@ tinkerer.add_task(tinkerer.increase_delegator_stake_to_validator,
                   validator=coping,
                   increase={'amount': UMEE_SUPLY_3X, 'denom': DENOM})
 
-tinkerer.add_task(tinkerer.set_leverage_last_interest_time)
+# tinkerer.add_task(tinkerer.set_leverage_last_interest_time)
 
 # Set governance parameters
 tinkerer.add_task(tinkerer.set_min_deposit, min_amount='1', denom=DENOM)  # 1 uumee
