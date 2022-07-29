@@ -115,15 +115,6 @@ class Validator:
     def consensus_address(self, addr):
         self._cons_addr = addr
 
-    def to_delegator(self):
-        """
-        Returns a new Delegator based on the self delegation attributtes
-        """
-        delegator = Delegator()
-        delegator.address = self.self_delegation_address
-        delegator.public_key = self.self_delegation_public_key
-        return delegator
-
 
 class Delegator:
     """
@@ -336,6 +327,43 @@ class GenesisTinker:  # pylint: disable=R0902,R0904
                 content_bytes = infile.read()
 
         print(f'SHA256SUM: {sha256(content_bytes).hexdigest()}')
+
+    def get_top1_validator(self) -> Validator:
+        """
+        Retreves the validator with the most power in the validator set
+        """
+
+        top_validator = {'power': '0'}
+        for validator in self.validators:
+            if int(validator["power"]) > int(top_validator["power"]):
+                top_validator = validator
+
+
+        top1 = Validator()
+
+        top1.address = top_validator["address"]
+        top1.public_key = top_validator["pub_key"]["value"]
+
+        for staking_validator in self.app_state["staking"]["validators"]:
+            if top1.public_key == staking_validator["consensus_pubkey"]["key"]:
+                top1.operator_address = staking_validator["operator_address"]
+                break
+
+        for staking_delegator in self.app_state["staking"]["delegations"]:
+            if top1.operator_address == staking_delegator["validator_address"]:
+                top1.self_delegation_address = staking_delegator["delegator_address"]
+
+                for auth_account in self.app_state["auth"]["accounts"]:
+                    if auth_account["@type"] == "/cosmos.auth.v1beta1.BaseAccount":
+                        if staking_delegator["delegator_address"] == auth_account["address"]:
+                            top1.self_delegation_public_key = auth_account["pub_key"]["key"]
+                            return top1
+                    else:
+                        if staking_delegator["delegator_address"] == auth_account["base_vesting_account"]["base_account"]["address"]:
+                            top1.self_delegation_public_key = auth_account["base_vesting_account"]["base_account"]["pub_key"]["key"]
+                            return top1
+
+        return top1
 
     def create_preprocessing_file(self):
         """
@@ -769,7 +797,7 @@ class GenesisTinker:  # pylint: disable=R0902,R0904
 
         return self
 
-    def increase_validator_stake(self, operator_address, increase):
+    def increase_validator_stake(self, operator_address, increase, denom):
         """
         Increases the stake of a validator as well as its delegator_shares
         """
@@ -787,9 +815,9 @@ class GenesisTinker:  # pylint: disable=R0902,R0904
                     self.log_step("Changing bond status to BOND_STATUS_BONDED")
                     validator["status"] = "BOND_STATUS_BONDED"
                     self.increase_balance(
-                        self.get_bonded_pool_address(), old_amount)
+                        self.get_bonded_pool_address(), old_amount, denom=denom)
                     self.increase_balance(
-                        self.get_not_bonded_pool_address(), -1*old_amount)
+                        self.get_not_bonded_pool_address(), -1*old_amount, denom=denom)
                 new_amount = old_amount + increase
                 validator["tokens"] = str(new_amount)
                 old_shares = float(validator["delegator_shares"])
