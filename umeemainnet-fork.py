@@ -28,20 +28,20 @@ if len(sys.argv) > 2:
   OUTPUT_GENESIS = sys.argv[2]
 
 DENOM = "uumee"
-UUMEE_STAKE_INCREASE = 550000000 * 1000000
-UUMEE_LIQUID_TOKEN_INCREASE = 175000000 * 1000000
+UUMEE_STAKE_INCREASE = 55000000000000 * 1000000
+UUMEE_LIQUID_TOKEN_INCREASE = 17500000000 * 1000000
 
 UMEE_TESTNET_CHAIN_ID = "umeemain-local-testnet"
 
 tinkerer = GenesisTinker(input_file=GENESIS_ARCHIVE, output_file=OUTPUT_GENESIS)
-tinkerer.auto_load()
-validators = tinkerer.validators
 
-topval = tinkerer.get_top1_validator()
-keysParseProcess = subprocess.run(['umeed', 'keys', 'parse', topval.address, '--output', 'json'], check=True, capture_output=True)
-jsonAddresses = json.loads(keysParseProcess.stdout)
-
-topval.consensus_address = jsonAddresses["formats"][4]
+polychain = Validator()
+polychain.self_delegation_address = 'umee16qflfas8a9qjuskg9706n0926v8hac6ac5wgun'
+polychain.self_delegation_public_key = 'A2gWW7NuiY+XHYogPsOb7BeXs5wAn790SaffIxVjnVYO'
+polychain.operator_address = 'umeevaloper16qflfas8a9qjuskg9706n0926v8hac6acsf8de'
+polychain.address = '7DEDA80FC09EFD466D0B4561B87C1A365CCCF1C3'
+polychain.public_key = '5Tpjyd5KMjVbNNSXTZ3H4Tkzw5ftD3n6zggfqekNFtY='
+polychain.consensus_address = 'umeevalcons10hk6sr7qnm75vmgtg4smslq6xewveuwrak6dp7'
 
 # New Validator
 newValidator = Validator()
@@ -50,11 +50,10 @@ newValidator.self_delegation_public_key = 'AoU6ZVoJ3Fig6+cP8qrLJu7hKaySD84FiNZ62
 newValidator.operator_address = 'umeevaloper1pprgkthxc2yhr5gvuk2tcjjchfhq6n96xvj90p'
 newValidator.address = 'C913552357B2B69C728EB645B528C94A30DB7AB4'
 newValidator.public_key = '+LCKUZH2o+2V5G4Nvl7apMoIFml6eW5zXNO69+DvaIA='
-newValidator.consensus_address = 'umeevalcons1pprgkthxc2yhr5gvuk2tcjjchfhq6n96jlperq'
-
+newValidator.consensus_address = 'umeevalcons1eyf42g6hk2mfcu5wkezm22xffgcdk745ekl7hs'
 
 tinkerer.add_task(tinkerer.replace_validator,
-                 old_validator=topval,
+                 old_validator=polychain,
                  new_validator=newValidator)
 
 tinkerer.add_task(tinkerer.set_chain_id,
