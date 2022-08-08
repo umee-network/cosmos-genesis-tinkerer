@@ -8,6 +8,7 @@ Usage:
 $ ./umeemania-fork.py genesis_file_path.json tinkered_genesis_path.json
 """
 
+from delegator import to_delegator
 from cosmos_genesis_tinker import Validator, GenesisTinker
 
 GENESIS_ARCHIVE = "festival.genesis.json"
@@ -34,7 +35,7 @@ coping.consensus_address = 'umeevalcons1pprgkthxc2yhr5gvuk2tcjjchfhq6n96jlperq'
 tinkerer = GenesisTinker(input_file=GENESIS_ARCHIVE, output_file=OUTPUT_GENESIS)
 
 tinkerer.add_task(tinkerer.increase_delegator_stake_to_validator,
-                  delegator=coping.to_delegator(),
+                  delegator=to_delegator(coping),
                   validator=coping,
                   increase={'amount': UMEE_SUPLY_3X, 'denom': DENOM})
 

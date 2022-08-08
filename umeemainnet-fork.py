@@ -9,16 +9,8 @@ Usage:
 $ ./umeemainnet-fork.py genesis_file_path.json tinkered_genesis_path.json
 """
 
+from delegator import to_delegator
 from cosmos_genesis_tinker import Validator, Delegator, GenesisTinker
-
-def to_delegator(validator: Validator):
-  """
-  Returns a new Delegator based on the validator
-  """
-  delegator = Delegator()
-  delegator.address = validator.self_delegation_address
-  delegator.public_key = validator.self_delegation_public_key
-  return delegator
 
 GENESIS_ARCHIVE = "umeemainnet.genesis.json"
 OUTPUT_GENESIS = "tinkered_genesis.json"
