@@ -4,13 +4,13 @@ import json
 import sys
 
 """
-Genesis modification script on a exported genesis file from umeemania-1 umee testnet.
+Genesis modification script on a exported genesis file from canon-3 umee testnet https://explorer.network.umee.cc/ to do an hard-fork.
 Usage:
 $ ./umeecanon-3-fork.py genesis_file_path.json tinkered_genesis_path.json
 """
 
 from delegator import to_delegator
-from cosmos_genesis_tinker import Validator, Delegator, GenesisTinker
+from cosmos_genesis_tinker import Validator, GenesisTinker
 
 GENESIS_ARCHIVE = "umeemainnet.genesis.json"
 OUTPUT_GENESIS = "tinkered_genesis.json"
